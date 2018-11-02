@@ -10,72 +10,86 @@ typedef struct node{
 
 } node;
 
-typedef struct tree{
-  node *root;
-}tree;
-
-void stringToTree(char *toParse);
-void buildNode(tree t, char *item);
-void insert(node **t, node *new);
+node *stringToTree(char *toParse);
+void buildNode(node **root, char *item);
+void insert(node **root, node *new);
+void postOrder(node *root);
 
 int main(int argc, char *argv[]){
 
-  char *expression; //Stores expression
+  node *root;
 
   if(argc != 2){
     printf("ERROR: EXPECTED INPUT: q1.c <EXPRESSION>\n");
     return -1;
   }
 
-  expression = argv[1];
-  stringToTree(expression);
+  root = stringToTree(argv[1]);
+
+  postOrder(root);
+  printf("\n");
 
   return 0;
 }
 
-void stringToTree(char *toParse){
+node *stringToTree(char *toParse){
 
   //Counts # of brackets
   //int rBracket = 0;
   //int lBracket = 0;
-  tree *t;
+  node *root = NULL;
 
   for(int i = 0; i < strlen(toParse); i++){
 
     if(toParse[i] != ')' || toParse[i] != '('){
-        buildNode(&t, &toParse[i]);
+        buildNode(&root, &toParse[i]);
     }
 
   }
 
+  return root;
+
 }
 
-void buildNode(tree t, char *item){
+void buildNode(node **root, char *item){
 
   node *new;
   new = malloc(sizeof(node));
   new->item = item;
   new->left = NULL;
   new->right = NULL;
-  insert(&(t.root), new);
+
+  insert(root, new);
 
 }
 
-void insert(node **t, node *new){
+void insert(node **root, node *new){
 
-  node *base = *t;
-
-  if(base == NULL){
-    *t = new;
+  if(*root == NULL){
+    (*root) = new;
     return;
   }
   else{
-    if(base->left == NULL){
-      insert( &(base->left), new );
+
+    if((*root)->left == NULL){
+      insert( &((*root)->left), new );
     }
     else{
-      insert( &(base->right), new );
+      insert( &((*root)->right), new );
     }
+  }
+
+}
+
+void postOrder(node *root){
+
+  if(root == NULL){
+    return;
+  }
+  else{
+    printf("%c ", *(root->item));
+    postOrder(root->left);
+    postOrder(root->right);
   }
 
 }
