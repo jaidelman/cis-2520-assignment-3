@@ -39,7 +39,7 @@ int main(){
   }
   fclose(fp); //Close file
 
-  for(int i = 1; i<21; i++){
+  for(int i = 10; i>0; i--){
     //Downheap every node to make it a max-heap
     downheap(heap, i);
   }
@@ -63,16 +63,28 @@ void downheap(object heap[21], int index){
 
   object temp;
 
-  //If child is less than parent
-  if(keyLess(&heap[index/2], &heap[index]) == 1 && index > 1 ){
+  //For all parent nodes, check if left child is less than parent, and swap if true
+  if(index < 11 && keyLess(&heap[index*2], &heap[index]) == 1){
 
+    if(index == 1) printf("HERE\n");
     //Swap
-    temp = heap[index/2];
-    heap[index/2] = heap[index];
+    temp = heap[index*2];
+    heap[index*2] = heap[index];
     heap[index] = temp;
 
     //Downheap again on child
-    downheap(heap, index/2);
+    downheap(heap, index*2);
+  }
+  //For all parent nodes (with a right child), check if right child is less than parent, and swap if true
+  if(index < 10 && keyLess(&heap[index*2+1], &heap[index]) == 1){
+
+    //Swap
+    temp = heap[index*2+1];
+    heap[index*2+1] = heap[index];
+    heap[index] = temp;
+
+    //Downheap again on child
+    downheap(heap, index*2+1);
   }
 
 }
