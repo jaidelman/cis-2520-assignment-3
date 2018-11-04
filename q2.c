@@ -45,11 +45,11 @@ int main(){
   }
 
   //preOrder print
-  printf("PREORDER TRAVERSAL\n-------------------------\n");
+  printf("PRE-ORDER TRAVERSAL\n-------------------------\n");
   preOrder(heap, 1);
 
   //InOrder print
-  printf("\n\nINORDER TRAVERSAL\n------------------------\n");
+  printf("\n\nLEVEL ORDER TRAVERSAL\n------------------------\n");
   for(int i = 1; i<21; i++){
     printObj(heap[i], i);
   }

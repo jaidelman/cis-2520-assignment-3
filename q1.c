@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 typedef struct node{
 
@@ -8,23 +9,24 @@ typedef struct node{
   struct node *left;
   struct node *right;
 
-} node;
+}node;
 
-node *stringToTree(char *toParse);
-void buildNode(node **root, char *item);
-void insert(node **root, node *new);
 void postOrder(node *root);
+node *buildTree(char *expression);
+bool isOperator(char a);
 
 int main(int argc, char *argv[]){
 
   node *root;
+  char *expression;
 
   if(argc != 2){
     printf("ERROR: EXPECTED INPUT: q1.c <EXPRESSION>\n");
     return -1;
   }
 
-  root = stringToTree(argv[1]);
+  expression = argv[1];
+  root = buildTree(expression);
 
   postOrder(root);
   printf("\n");
@@ -32,53 +34,65 @@ int main(int argc, char *argv[]){
   return 0;
 }
 
-node *stringToTree(char *toParse){
+node *buildTree(char *expression){
 
-  //Counts # of brackets
-  //int rBracket = 0;
-  //int lBracket = 0;
-  node *root = NULL;
+  node *root = malloc(sizeof(node));
+  int lBracket = 0;
+  int rBracket = 0;
+  int opIndex = 0;
+  char *operator = malloc(sizeof(char));
+  char *rExpression = malloc(sizeof(char) * strlen(expression)/2);
+  char *lExpression = malloc(sizeof(char) * strlen(expression)/2);
 
-  for(int i = 0; i < strlen(toParse); i++){
-
-    if(toParse[i] != ')' || toParse[i] != '('){
-        buildNode(&root, &toParse[i]);
-    }
-
-  }
-
-  return root;
-
-}
-
-void buildNode(node **root, char *item){
-
-  node *new;
-  new = malloc(sizeof(node));
-  new->item = item;
-  new->left = NULL;
-  new->right = NULL;
-
-  insert(root, new);
-
-}
-
-void insert(node **root, node *new){
-
-  if(*root == NULL){
-    (*root) = new;
-    return;
+  if(expression[0] != '('){
+    root->item = expression;
+    root->left = NULL;
+    root->right = NULL;
   }
   else{
+    expression[strlen(expression)-1] = '\0';
+    expression = expression + 1;
 
-    if((*root)->left == NULL){
-      insert( &((*root)->left), new );
-    }
-    else{
-      insert( &((*root)->right), new );
+    for(int i = 0; i<strlen(expression); i++){
+
+      if(expression[i] == ')'){
+        rBracket++;
+      }
+      else if(expression[i] == '('){
+        lBracket++;
+      }
+
+      if(rBracket == lBracket){
+printf("Index: %d\n", i);
+printf("Char @ index: %c\n", expression[i]);
+        for(int j = 0; j<strlen(expression); j++){
+
+          if(isOperator(expression[j])){
+            strcpy(operator, &expression[j]);
+            operator[1] = '\0';
+            root->item = operator;
+            opIndex = j;
+
+            j = strlen(expression);
+          }
+
+        }
+
+        strcpy(lExpression, expression);
+        lExpression[opIndex] = '\0';
+        printf("L: %s\n", lExpression);
+        root->left = buildTree(lExpression);
+
+        expression = expression + opIndex + 1;
+        strcpy(rExpression, expression);
+        printf("R: %s\n", rExpression);
+        root->right = buildTree(rExpression);
+      }
     }
   }
 
+
+  return root;
 }
 
 void postOrder(node *root){
@@ -87,9 +101,18 @@ void postOrder(node *root){
     return;
   }
   else{
-    printf("%c ", *(root->item));
     postOrder(root->left);
     postOrder(root->right);
+    printf("%s", (root->item));
   }
+
+}
+
+bool isOperator(char a){
+
+  if(a == '*' || a == '/' || a == '+' || a == '-'){
+    return true;
+  }
+  return false;
 
 }
