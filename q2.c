@@ -40,7 +40,7 @@ int main(){
   fclose(fp); //Close file
 
   for(int i = 10; i>0; i--){
-    //Downheap every node to make it a max-heap
+    //Downheap every node to make it a min-heap
     downheap(heap, i);
   }
 
@@ -48,7 +48,7 @@ int main(){
   printf("PRE-ORDER TRAVERSAL\n-------------------------\n");
   preOrder(heap, 1);
 
-  //InOrder print
+  //Level Order print
   printf("\n\nLEVEL ORDER TRAVERSAL\n------------------------\n");
   for(int i = 1; i<21; i++){
     printObj(heap[i], i);
@@ -58,7 +58,7 @@ int main(){
   return 0;
 }
 
-//Runs downheap on heap to make it a max-heap
+//Runs downheap on heap to make it a min-heap
 void downheap(object heap[21], int index){
 
   object temp;

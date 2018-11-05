@@ -342,7 +342,7 @@ double answer(node *root){
 
     //Divide by 0 check
     if(right == 0.0){
-      printf("DIVIDE BY ZERO!\n");
+      printf("DIVIDE BY ZERO! Returning -1...\n");
       return -1;
     }
     return left/right;
